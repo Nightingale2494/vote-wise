@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VoteWise — Interactive Election Assistant</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="bg-orb orb-1" aria-hidden="true"></div>
+    <div class="bg-orb orb-2" aria-hidden="true"></div>
+
+    <main class="app-shell">
+      <header class="hero card">
+        <div>
+          <p class="eyebrow">🗳️ VoteWise</p>
+          <h1>Start Your Voting Journey</h1>
+          <p class="subtitle">
+            No confusion. No jargon. Just clear next steps for Indian elections. ✨
+          </p>
+        </div>
+        <button id="demo-fill" class="btn-ghost" type="button">Try demo profile</button>
+      </header>
+
+      <section class="stepper card" aria-label="Progress tracker">
+        <div class="step active">1. Profile</div>
+        <div class="step">2. Guidance</div>
+        <div class="step">3. Timeline</div>
+        <div class="step">4. Location</div>
+        <div class="step">5. Chat</div>
+      </section>
+
+      <section class="grid-2">
+        <section class="card" aria-labelledby="profile-title">
+          <div class="section-head">
+            <h2 id="profile-title">Step 1: Tell us about you</h2>
+            <span id="progress-pill" class="pill">Profile setup</span>
+          </div>
+
+          <form id="profile-form" class="form-grid">
+            <label>
+              Age
+              <input id="age" type="number" min="0" max="120" required placeholder="e.g., 19" />
+            </label>
+
+            <label>
+              Country
+              <select id="country">
+                <option value="India" selected>India</option>
+              </select>
+            </label>
+
+            <label>
+              State/UT
+              <input id="state" placeholder="e.g., West Bengal" />
+            </label>
+
+            <label>
+              Registration status
+              <select id="registration-status" required>
+                <option value="not_registered">Not registered yet</option>
+                <option value="registered">Already registered</option>
+              </select>
+            </label>
+
+            <button type="submit" class="btn-primary">Get my next move 🎯</button>
+          </form>
+        </section>
+
+        <section class="card" aria-labelledby="guidance-title">
+          <div class="section-head">
+            <h2 id="guidance-title">Step 2: Personalized guidance</h2>
+            <span class="pill">Dynamic response</span>
+          </div>
+          <div id="guidance-output" class="response-panel emphasis">
+            <p>Fill your profile to unlock your guided path.</p>
+          </div>
+        </section>
+      </section>
+
+      <section class="grid-2">
+        <section class="card" aria-labelledby="timeline-title">
+          <div class="section-head">
+            <h2 id="timeline-title">Step 3: Election timeline 🗓️</h2>
+            <span class="pill">You are here 📍</span>
+          </div>
+          <div id="timeline" class="timeline" role="list"></div>
+        </section>
+
+        <section class="card" aria-labelledby="location-title">
+          <div class="section-head">
+            <h2 id="location-title">Step 4: Find polling assistance</h2>
+            <span class="pill">Location support</span>
+          </div>
+
+          <form id="location-form" class="form-grid compact">
+            <label>
+              City / area
+              <input id="location-input" placeholder="e.g., Kolkata" required />
+            </label>
+            <button type="submit" class="btn-secondary">Find my booth</button>
+          </form>
+          <div id="location-output" class="response-panel small">
+            <p>We’ll generate direct links with better search phrasing for maps and official resources.</p>
+          </div>
+        </section>
+      </section>
+
+      <section class="card" aria-labelledby="chat-title">
+        <div class="section-head">
+          <h2 id="chat-title">Step 5: Ask VoteWise anything 💬</h2>
+          <span class="pill">Chat assistant</span>
+        </div>
+
+        <div class="chips" role="list" aria-label="Suggested questions">
+          <button class="chip" data-q="What is EVM?">What is EVM?</button>
+          <button class="chip" data-q="What is NOTA?">What is NOTA?</button>
+          <button class="chip" data-q="Can I vote without voter ID?">Can I vote without voter ID?</button>
+          <button class="chip" data-q="Show election timeline">Show election timeline</button>
+        </div>
+
+        <div id="chat-log" class="chat-log" aria-live="polite">
+          <article class="bubble assistant">
+            Hey 👋 I’m VoteWise. Ask anything about registration, polling booths, EVM, or NOTA.
+          </article>
+        </div>
+
+        <form id="chat-form" class="chat-controls">
+          <input id="chat-input" placeholder="Type your election question..." required />
+          <button class="btn-primary" type="submit">Send</button>
+        </form>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
