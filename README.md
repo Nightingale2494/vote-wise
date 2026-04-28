@@ -1,19 +1,14 @@
 # VoteWise — Interactive Election Assistant
 
-A colorful multi-page, front-end voting assistant for Indian elections.
+A lightweight, front-end guided voting assistant focused on Indian elections.
 
-## What's new
+## Features
 
-- **Multi-page experience**:
-  - `index.html` (home + quick profile preview)
-  - `journey.html` (guided planner + timeline + advanced polling finder)
-  - `assistant.html` (chat-first Q&A)
-- Improved UI with richer gradients, color panels, and clear tab navigation.
-- More complex polling discovery logic:
-  - multiple Maps strategies (polling booth, BLO office, registration office)
-  - multi-query Google Search fallbacks
-  - direct ECI + NVSP official links
-  - optional PIN code + search mode input
+- Guided onboarding for first-time voters.
+- Personalized next steps based on age and registration status.
+- Election timeline view with a "You are here" indicator.
+- Polling-station assistance via Google Maps search link.
+- Simple context-aware election Q&A chat.
 
 ## Tech
 
@@ -23,16 +18,18 @@ A colorful multi-page, front-end voting assistant for Indian elections.
 
 ## Run locally
 
+Because this is a static app, open `index.html` in a browser.
+
+Optional local server:
+
 ```bash
 python3 -m http.server 8000
 ```
 
-Then open:
-- <http://localhost:8000/index.html>
-- <http://localhost:8000/journey.html>
-- <http://localhost:8000/assistant.html>
+Then open <http://localhost:8000>.
 
 ## Notes
 
-- No API keys are embedded.
-- No sensitive user data is persisted.
+- This project avoids storing sensitive user data.
+- API keys are not embedded in the frontend.
+- Assumes internet connectivity for maps links.
