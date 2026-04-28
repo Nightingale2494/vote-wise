@@ -29,7 +29,7 @@ function renderTimeline(currentIndex = 0) {
     card.className = `timeline-item ${index === currentIndex ? "current" : ""}`;
     card.setAttribute("role", "listitem");
     card.innerHTML = `<strong>${phase}</strong>${
-      index === currentIndex ? " <span> — You are here 📍</span>" : ""
+      index === currentIndex ? ' <span class="map-note">— You are here 📍</span>' : ""
     }`;
     timelineRoot.appendChild(card);
   });
@@ -103,7 +103,7 @@ function respondToChat(message) {
   }
 
   if (q.includes("where do i vote") || q.includes("polling")) {
-    return "Share your city/area in the location section above, and I’ll build a direct maps search for nearby polling stations and election offices.";
+    return "Share your city/area in the location section above. I now provide multiple map links + an official ECI lookup fallback if Google Maps misses your query.";
   }
 
   return "Got it. I can explain voting terms, eligibility, registration, timeline, or polling booth guidance in simple steps. Try asking one of those!";
@@ -143,12 +143,26 @@ locationForm.addEventListener("submit", (event) => {
     return;
   }
 
-  const mapsQuery = encodeURIComponent(`${location} polling station election office India`);
-  const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${mapsQuery}`;
+  const locationOnly = encodeURIComponent(`${location}, India`);
+  const electionContext = encodeURIComponent(`${location} election office India`);
+  const pollingContext = encodeURIComponent(`${location} polling station`);
+
+  const mapsLocationUrl = `https://www.google.com/maps/search/?api=1&query=${locationOnly}`;
+  const mapsElectionUrl = `https://www.google.com/maps/search/?api=1&query=${electionContext}`;
+  const mapsPollingUrl = `https://www.google.com/maps/search/?api=1&query=${pollingContext}`;
+  const googleWebSearch = `https://www.google.com/search?q=${encodeURIComponent(`${location} polling booth locator`)}`;
+  const eciVoterPortal = "https://voters.eci.gov.in/";
 
   locationOutput.innerHTML = `
-    <p>Use this maps search for nearby polling help in <strong>${location}</strong>:</p>
-    <p><a href="${mapsUrl}" target="_blank" rel="noopener noreferrer">Open Google Maps results</a></p>
+    <p><strong>Better search strategy for ${location}:</strong></p>
+    <ul class="location-links">
+      <li><a href="${mapsLocationUrl}" target="_blank" rel="noopener noreferrer">1) Open ${location} on Maps first</a></li>
+      <li><a href="${mapsElectionUrl}" target="_blank" rel="noopener noreferrer">2) Then search “election office” nearby</a></li>
+      <li><a href="${mapsPollingUrl}" target="_blank" rel="noopener noreferrer">3) Try “polling station” nearby</a></li>
+      <li><a href="${googleWebSearch}" target="_blank" rel="noopener noreferrer">4) Fallback: Google web search for booth locator</a></li>
+      <li><a href="${eciVoterPortal}" target="_blank" rel="noopener noreferrer">5) Official fallback: ECI Voter Portal booth details</a></li>
+    </ul>
+    <p class="map-note">Tip: If Maps says “can't find”, keep only city name (e.g., “Kolkata”) and run step 2 or 3.</p>
   `;
 });
 
