@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VoteWise — Assistant</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="bg-orb orb-1" aria-hidden="true"></div>
+    <div class="bg-orb orb-2" aria-hidden="true"></div>
+    <main class="app-shell">
+      <nav class="card nav-tabs" aria-label="Main navigation">
+        <a class="tab" href="index.html">🏠 Home</a>
+        <a class="tab" href="journey.html">🧭 Journey Planner</a>
+        <a class="tab active" href="assistant.html">💬 Assistant</a>
+      </nav>
+
+      <section class="card">
+        <div class="section-head"><h2>Ask VoteWise anything 💬</h2><span class="pill">Smart replies</span></div>
+        <div class="chips" role="list" aria-label="Suggested questions">
+          <button class="chip" data-q="What is EVM?">What is EVM?</button>
+          <button class="chip" data-q="What is NOTA?">What is NOTA?</button>
+          <button class="chip" data-q="Can I vote without voter ID?">Can I vote without voter ID?</button>
+          <button class="chip" data-q="How do I find my polling booth?">How do I find my polling booth?</button>
+        </div>
+        <div id="chat-log" class="chat-log" aria-live="polite">
+          <article class="bubble assistant">Hi 👋 Ask election basics, voting process, or booth-finding questions.</article>
+        </div>
+        <form id="chat-form" class="chat-controls">
+          <input id="chat-input" placeholder="Type your election question..." required />
+          <button class="btn-primary" type="submit">Send</button>
+        </form>
+      </section>
+    </main>
+    <script src="app.js"></script>
+  </body>
+</html>

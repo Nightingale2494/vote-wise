@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VoteWise — Home</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="bg-orb orb-1" aria-hidden="true"></div>
+    <div class="bg-orb orb-2" aria-hidden="true"></div>
+
+    <main class="app-shell">
+      <header class="hero card">
+        <div>
+          <p class="eyebrow">🗳️ VoteWise</p>
+          <h1>Election Journey, But Actually Fun</h1>
+          <p class="subtitle">Choose a mode and get personalized, colorful guidance.</p>
+        </div>
+        <button id="demo-fill" class="btn-ghost" type="button">Try demo profile</button>
+      </header>
+
+      <nav class="card nav-tabs" aria-label="Main navigation">
+        <a class="tab active" href="index.html">🏠 Home</a>
+        <a class="tab" href="journey.html">🧭 Journey Planner</a>
+        <a class="tab" href="assistant.html">💬 Assistant</a>
+      </nav>
+
+      <section class="grid-2">
+        <section class="card color-panel panel-indigo">
+          <h2>Start here</h2>
+          <p>Tell us age, state, and registration status to unlock your next best action.</p>
+          <a class="btn-primary inline-btn" href="journey.html">Open Journey Planner</a>
+        </section>
+        <section class="card color-panel panel-mint">
+          <h2>Need quick answers?</h2>
+          <p>Ask EVM, NOTA, voter ID, or polling questions in a chat-first screen.</p>
+          <a class="btn-secondary inline-btn" href="assistant.html">Open Assistant</a>
+        </section>
+      </section>
+
+      <section class="card" aria-labelledby="quick-title">
+        <div class="section-head"><h2 id="quick-title">Quick profile snapshot</h2><span class="pill">Home preview</span></div>
+        <form id="profile-form" class="form-grid">
+          <label>Age <input id="age" type="number" min="0" max="120" required placeholder="e.g., 19" /></label>
+          <label>State/UT <input id="state" placeholder="e.g., West Bengal" /></label>
+          <label>Registration status
+            <select id="registration-status" required>
+              <option value="not_registered">Not registered yet</option>
+              <option value="registered">Already registered</option>
+            </select>
+          </label>
+          <button type="submit" class="btn-primary">Preview my next move</button>
+        </form>
+        <div id="guidance-output" class="response-panel emphasis"><p>Preview appears here.</p></div>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
