@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VoteWise — Journey Planner</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="bg-orb orb-1" aria-hidden="true"></div>
+    <div class="bg-orb orb-2" aria-hidden="true"></div>
+    <main class="app-shell">
+      <nav class="card nav-tabs" aria-label="Main navigation">
+        <a class="tab" href="index.html">🏠 Home</a>
+        <a class="tab active" href="journey.html">🧭 Journey Planner</a>
+        <a class="tab" href="assistant.html">💬 Assistant</a>
+      </nav>
+
+      <section class="stepper card" aria-label="Progress tracker">
+        <div class="step active">1. Profile</div><div class="step">2. Guidance</div><div class="step">3. Timeline</div><div class="step">4. Location</div><div class="step">5. Action</div>
+      </section>
+
+      <section class="grid-2">
+        <section class="card">
+          <div class="section-head"><h2>Profile</h2><span id="progress-pill" class="pill">Profile setup</span></div>
+          <form id="profile-form" class="form-grid">
+            <label>Age <input id="age" type="number" min="0" max="120" required placeholder="e.g., 19" /></label>
+            <label>State/UT <input id="state" placeholder="e.g., West Bengal" /></label>
+            <label>Registration status
+              <select id="registration-status" required>
+                <option value="not_registered">Not registered yet</option>
+                <option value="registered">Already registered</option>
+              </select>
+            </label>
+            <button type="submit" class="btn-primary">Generate plan 🎯</button>
+          </form>
+          <div id="guidance-output" class="response-panel emphasis"><p>Complete your profile to generate your plan.</p></div>
+        </section>
+        <section class="card">
+          <div class="section-head"><h2>Timeline</h2><span class="pill">You are here 📍</span></div>
+          <div id="timeline" class="timeline"></div>
+        </section>
+      </section>
+
+      <section class="card">
+        <div class="section-head"><h2>Polling finder (improved)</h2><span class="pill">Multi-search</span></div>
+        <form id="location-form" class="form-grid compact-3">
+          <label>City/Area <input id="location-input" placeholder="e.g., Kolkata" required /></label>
+          <label>PIN code (optional) <input id="pincode-input" placeholder="e.g., 700001" /></label>
+          <label>Search mode
+            <select id="booth-mode">
+              <option value="polling_booth">Polling booth</option>
+              <option value="election_office">Election office</option>
+            </select>
+          </label>
+          <button type="submit" class="btn-secondary">Find official links</button>
+        </form>
+        <div id="location-output" class="response-panel small"><p>We generate multiple precise search paths + official portals.</p></div>
+      </section>
+    </main>
+    <script src="app.js"></script>
+  </body>
+</html>
