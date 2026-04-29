@@ -1,4 +1,5 @@
 const profileForm = document.getElementById("profile-form");
+
 const guidanceOutput = document.getElementById("guidance-output");
 const timelineRoot = document.getElementById("timeline");
 const locationForm = document.getElementById("location-form");
