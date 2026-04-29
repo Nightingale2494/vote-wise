@@ -9,99 +9,74 @@
   <body>
     <main class="app-shell">
       <header class="hero card">
-        <p class="eyebrow">🗳️ VoteWise</p>
-        <h1>Start Your Voting Journey</h1>
-        <p class="subtitle">
-          A simple, guided mission for first-time voters in India.
-        </p>
+        <div>
+          <p class="eyebrow">🗳️ VoteWise</p>
+          <h1>Start Your Voting Journey</h1>
+          <p class="subtitle">A guided, smart election companion for first-time voters in India.</p>
+        </div>
+        <button id="theme-toggle" class="btn-ghost" type="button">🌙 Dark mode</button>
       </header>
+
+      <section class="card" aria-labelledby="dashboard-title">
+        <div class="section-head">
+          <h2 id="dashboard-title">Your Readiness Dashboard</h2>
+          <span id="readiness-pill" class="pill">Readiness: --</span>
+        </div>
+        <div class="stats-grid" id="stats-grid">
+          <article class="stat-card"><h3>Eligibility</h3><p id="stat-eligibility">Unknown</p></article>
+          <article class="stat-card"><h3>Registration</h3><p id="stat-registration">Pending</p></article>
+          <article class="stat-card"><h3>Preparedness</h3><p id="stat-prep">0/5 tasks</p></article>
+        </div>
+      </section>
 
       <section class="card" aria-labelledby="profile-title">
         <div class="section-head">
-          <h2 id="profile-title">Step 1 of 5: Tell us about you</h2>
+          <h2 id="profile-title">Step 1 of 6: Tell us about you</h2>
           <span id="progress-pill" class="pill">Profile setup</span>
         </div>
-
         <form id="profile-form" class="form-grid">
-          <label>
-            Age
-            <input id="age" type="number" min="0" max="120" required placeholder="e.g., 19" />
-          </label>
-
-          <label>
-            Country
-            <select id="country">
-              <option value="India" selected>India</option>
-            </select>
-          </label>
-
-          <label>
-            Registration status
+          <label>Age<input id="age" type="number" min="0" max="120" required placeholder="e.g., 19" /></label>
+          <label>Country<select id="country"><option value="India" selected>India</option></select></label>
+          <label>Registration status
             <select id="registration-status" required>
               <option value="not_registered">Not registered yet</option>
               <option value="registered">Already registered</option>
             </select>
           </label>
-
           <button type="submit" class="btn-primary">Get my next move 🎯</button>
         </form>
       </section>
 
       <section class="card" aria-labelledby="guidance-title">
-        <div class="section-head">
-          <h2 id="guidance-title">Step 2 of 5: Personalized guidance</h2>
-          <span class="pill">Dynamic response</span>
-        </div>
-        <div id="guidance-output" class="response-panel">
-          <p>Fill your profile to unlock your guided path.</p>
-        </div>
+        <div class="section-head"><h2 id="guidance-title">Step 2 of 6: Personalized guidance</h2><span class="pill">Dynamic response</span></div>
+        <div id="guidance-output" class="response-panel"><p>Fill your profile to unlock your guided path.</p></div>
+      </section>
+
+      <section class="card" aria-labelledby="checklist-title">
+        <div class="section-head"><h2 id="checklist-title">Step 3 of 6: Voting checklist</h2><span class="pill">Auto-saved</span></div>
+        <div id="checklist" class="checklist"></div>
       </section>
 
       <section class="card" aria-labelledby="timeline-title">
-        <div class="section-head">
-          <h2 id="timeline-title">Step 3 of 5: Election timeline</h2>
-          <span class="pill">You are here 📍</span>
-        </div>
+        <div class="section-head"><h2 id="timeline-title">Step 4 of 6: Election timeline</h2><span class="pill">You are here 📍</span></div>
         <div id="timeline" class="timeline" role="list"></div>
       </section>
 
       <section class="card" aria-labelledby="location-title">
-        <div class="section-head">
-          <h2 id="location-title">Step 4 of 5: Find polling assistance</h2>
-          <span class="pill">Location support</span>
-        </div>
-
+        <div class="section-head"><h2 id="location-title">Step 5 of 6: Find polling assistance</h2><span class="pill">Location support</span></div>
         <form id="location-form" class="form-grid compact">
-          <label>
-            Enter city or area
-            <input id="location-input" placeholder="e.g., Bengaluru" />
-          </label>
-          <button type="submit" class="btn-secondary">Where do I vote?</button>
+          <label>Enter city or area<input id="location-input" placeholder="e.g., Kolkata, Salt Lake" /></label>
+          <button type="submit" class="btn-secondary">Find booth support</button>
         </form>
-        <div id="location-output" class="response-panel small">
-          <p>We will build a quick route to official election resources.</p>
-        </div>
+        <div id="location-output" class="response-panel small"><p>Multi-step Maps + ECI fallback appears here.</p></div>
       </section>
 
       <section class="card" aria-labelledby="chat-title">
-        <div class="section-head">
-          <h2 id="chat-title">Step 5 of 5: Ask VoteWise anything</h2>
-          <span class="pill">Chat assistant</span>
-        </div>
-
-        <div id="chat-log" class="chat-log" aria-live="polite">
-          <article class="bubble assistant">
-            Hi! Ask things like <em>"What is EVM?"</em> or <em>"Can I vote without voter ID?"</em>.
-          </article>
-        </div>
-
-        <form id="chat-form" class="chat-controls">
-          <input id="chat-input" placeholder="Type your election question..." required />
-          <button class="btn-primary" type="submit">Send</button>
-        </form>
+        <div class="section-head"><h2 id="chat-title">Step 6 of 6: Ask VoteWise anything</h2><span class="pill">Chat assistant</span></div>
+        <div id="chat-log" class="chat-log" aria-live="polite"><article class="bubble assistant">Hi! Ask: “What is EVM?”, “How does NOTA work?”, or “How to verify my booth?”</article></div>
+        <form id="chat-form" class="chat-controls"><input id="chat-input" placeholder="Type your election question..." required /><button class="btn-primary" type="submit">Send</button></form>
       </section>
     </main>
-
     <script src="app.js"></script>
   </body>
 </html>
