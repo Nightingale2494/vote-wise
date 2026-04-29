@@ -1,6 +1,5 @@
 const profileForm = document.getElementById("profile-form");
 const guidanceOutput = document.getElementById("guidance-output");
-const progressPill = document.getElementById("progress-pill");
 const timelineRoot = document.getElementById("timeline");
 const locationForm = document.getElementById("location-form");
 const locationOutput = document.getElementById("location-output");
@@ -120,8 +119,8 @@ profileForm.addEventListener("submit", (event) => {
   pushBubble("assistant", `Profile saved. Readiness recalculated for age ${userContext.age}.`);
 });
 
-locationForm.addEventListener("submit", (event) => {
-  event.preventDefault();
+locationForm.addEventListener("submit", (e) => {
+  e.preventDefault();
   const location = document.getElementById("location-input").value.trim();
   if (!location) return (locationOutput.innerHTML = "<p>Please enter your city or area first.</p>");
 
@@ -133,8 +132,9 @@ locationForm.addEventListener("submit", (event) => {
     eci: "https://voters.eci.gov.in/",
   };
 
-  if (!location) {
-    locationOutput.innerHTML = "<p>Please enter your city or area first.</p>";
+useLocationBtn.addEventListener("click", () => {
+  if (!navigator.geolocation) {
+    locationOutput.innerHTML = "<p>Geolocation not supported in this browser.</p>";
     return;
   }
 
@@ -177,6 +177,8 @@ themeToggle.addEventListener("click", () => {
   themeToggle.textContent = theme === "dark" ? "☀️ Light mode" : "🌙 Dark mode";
   localStorage.setItem("vw_theme", theme);
 });
+prevStepBtn.addEventListener("click", () => setStep(step - 1));
+nextStepBtn.addEventListener("click", () => setStep(step + 1));
 
 document.body.dataset.theme = theme;
 themeToggle.textContent = theme === "dark" ? "☀️ Light mode" : "🌙 Dark mode";
