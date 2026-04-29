@@ -7,20 +7,15 @@ const locationOutput = document.getElementById("location-output");
 const chatForm = document.getElementById("chat-form");
 const chatInput = document.getElementById("chat-input");
 const chatLog = document.getElementById("chat-log");
+const checklistRoot = document.getElementById("checklist");
+const readinessPill = document.getElementById("readiness-pill");
+const themeToggle = document.getElementById("theme-toggle");
 
-const timelinePhases = [
-  "Registration Phase",
-  "Campaigning",
-  "Voting Day",
-  "Counting",
-  "Results",
-];
-
-let userContext = {
-  age: null,
-  country: "India",
-  registrationStatus: "not_registered",
-};
+const timelinePhases = ["Registration", "Campaigning", "Voting Day", "Counting", "Results"];
+const checklistItems = ["Check voter list", "Keep ID proof ready", "Confirm polling booth", "Plan voting time", "Track election updates"];
+let checklistState = JSON.parse(localStorage.getItem("vw_checklist") || "[]");
+let theme = localStorage.getItem("vw_theme") || "light";
+let userContext = { age: null, country: "India", registrationStatus: "not_registered" };
 
 function renderTimeline(currentIndex = 0) {
   timelineRoot.innerHTML = "";
@@ -35,50 +30,47 @@ function renderTimeline(currentIndex = 0) {
   });
 }
 
+function computeReadiness() {
+  const done = checklistState.filter(Boolean).length;
+  const eligible = userContext.age >= 18;
+  const registered = userContext.registrationStatus === "registered";
+  let score = Math.round((done / checklistItems.length) * 50 + (eligible ? 25 : 0) + (registered ? 25 : 0));
+  score = Math.max(0, Math.min(100, score));
+  return { score, done, eligible, registered };
+}
+
+function refreshDashboard() {
+  const { score, done, eligible, registered } = computeReadiness();
+  readinessPill.textContent = `Readiness: ${score}%`;
+  document.getElementById("stat-eligibility").textContent = eligible ? "Eligible ✅" : "Not yet eligible";
+  document.getElementById("stat-registration").textContent = registered ? "Registered ✅" : "Not registered";
+  document.getElementById("stat-prep").textContent = `${done}/${checklistItems.length} tasks`;
+}
+
+function renderChecklist() {
+  checklistRoot.innerHTML = checklistItems
+    .map(
+      (item, idx) => `<label class="check-item"><input type="checkbox" data-i="${idx}" ${checklistState[idx] ? "checked" : ""}/> ${item}</label>`
+    )
+    .join("");
+
+  checklistRoot.querySelectorAll("input").forEach((box) => {
+    box.addEventListener("change", () => {
+      checklistState[Number(box.dataset.i)] = box.checked;
+      localStorage.setItem("vw_checklist", JSON.stringify(checklistState));
+      refreshDashboard();
+    });
+  });
+}
+
 function buildGuidance(age, registrationStatus) {
-  if (age < 18) {
-    return {
-      title: "You are not eligible yet — but you can prepare now ✅",
-      body: [
-        "Learn how registration works before your 18th birthday.",
-        "Collect basics: proof of age, address proof, and a passport-size photo.",
-        "Follow Election Commission of India updates and upcoming voter drives.",
-      ],
-      timelineStep: 0,
-      progress: "Prep mode",
-    };
-  }
-
-  if (registrationStatus === "not_registered") {
-    return {
-      title: "Great, your next move is registration 📝",
-      body: [
-        "Step 1: Open National Voters' Service Portal (NVSP) and choose Form 6.",
-        "Step 2: Upload required documents (age, address, photo).",
-        "Step 3: Submit and track your application reference ID.",
-      ],
-      timelineStep: 0,
-      progress: "Registration",
-    };
-  }
-
-  return {
-    title: "Awesome — you are registered. Let’s get you voting 🗳️",
-    body: [
-      "Confirm your name on the final electoral roll.",
-      "Locate your polling booth in advance.",
-      "Carry EPIC (voter ID) or any approved alternate photo ID on voting day.",
-    ],
-    timelineStep: 2,
-    progress: "Voting readiness",
-  };
+  if (age < 18) return { title: "You are not eligible yet — prepare now ✅", body: ["Learn registration basics.", "Collect age/address proof.", "Follow ECI voter drives."], timelineStep: 0, progress: "Prep mode" };
+  if (registrationStatus === "not_registered") return { title: "Next move: registration 📝", body: ["Open NVSP / Voter Portal.", "Use Form 6 and upload docs.", "Track reference ID status."], timelineStep: 0, progress: "Registration" };
+  return { title: "Registered — now optimize your vote plan 🗳️", body: ["Verify your name in final roll.", "Find polling booth now.", "Carry EPIC/approved photo ID."], timelineStep: 2, progress: "Voting readiness" };
 }
 
 function renderGuidance(guidance) {
-  guidanceOutput.innerHTML = `
-    <h3>${guidance.title}</h3>
-    <ul>${guidance.body.map((step) => `<li>${step}</li>`).join("")}</ul>
-  `;
+  guidanceOutput.innerHTML = `<h3>${guidance.title}</h3><ul>${guidance.body.map((step) => `<li>${step}</li>`).join("")}</ul>`;
   progressPill.textContent = guidance.progress;
   renderTimeline(guidance.timelineStep);
 }
@@ -114,29 +106,32 @@ function pushBubble(role, text) {
   bubble.className = `bubble ${role}`;
   bubble.textContent = text;
   chatLog.appendChild(bubble);
-  chatLog.scrollTop = chatLog.scrollHeight;
 }
 
 profileForm.addEventListener("submit", (event) => {
   event.preventDefault();
-
-  const age = Number(document.getElementById("age").value);
-  const country = document.getElementById("country").value;
-  const registrationStatus = document.getElementById("registration-status").value;
-
-  userContext = { age, country, registrationStatus };
-  const guidance = buildGuidance(age, registrationStatus);
-  renderGuidance(guidance);
-
-  pushBubble(
-    "assistant",
-    `Saved profile: age ${age}, ${registrationStatus.replace("_", " ")} in ${country}. Ask me your next question.`
-  );
+  userContext = {
+    age: Number(document.getElementById("age").value),
+    country: document.getElementById("country").value,
+    registrationStatus: document.getElementById("registration-status").value,
+  };
+  renderGuidance(buildGuidance(userContext.age, userContext.registrationStatus));
+  refreshDashboard();
+  pushBubble("assistant", `Profile saved. Readiness recalculated for age ${userContext.age}.`);
 });
 
 locationForm.addEventListener("submit", (event) => {
   event.preventDefault();
   const location = document.getElementById("location-input").value.trim();
+  if (!location) return (locationOutput.innerHTML = "<p>Please enter your city or area first.</p>");
+
+  const links = {
+    city: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${location}, India`)}`,
+    election: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${location} election office`)}`,
+    polling: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${location} polling station`)}`,
+    web: `https://www.google.com/search?q=${encodeURIComponent(`${location} polling booth locator`)}`,
+    eci: "https://voters.eci.gov.in/",
+  };
 
   if (!location) {
     locationOutput.innerHTML = "<p>Please enter your city or area first.</p>";
@@ -170,12 +165,21 @@ chatForm.addEventListener("submit", (event) => {
   event.preventDefault();
   const message = chatInput.value.trim();
   if (!message) return;
-
   pushBubble("user", message);
-  const response = respondToChat(message, userContext);
-  pushBubble("assistant", response);
-
+  pushBubble("assistant", respondToChat(message));
   chatInput.value = "";
+  chatLog.scrollTop = chatLog.scrollHeight;
 });
 
+themeToggle.addEventListener("click", () => {
+  theme = theme === "light" ? "dark" : "light";
+  document.body.dataset.theme = theme;
+  themeToggle.textContent = theme === "dark" ? "☀️ Light mode" : "🌙 Dark mode";
+  localStorage.setItem("vw_theme", theme);
+});
+
+document.body.dataset.theme = theme;
+themeToggle.textContent = theme === "dark" ? "☀️ Light mode" : "🌙 Dark mode";
+renderChecklist();
 renderTimeline();
+refreshDashboard();
