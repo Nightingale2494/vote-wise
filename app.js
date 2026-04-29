@@ -22,7 +22,10 @@ function renderTimeline(currentIndex = 0) {
   timelinePhases.forEach((phase, index) => {
     const card = document.createElement("article");
     card.className = `timeline-item ${index === currentIndex ? "current" : ""}`;
-    card.innerHTML = `<strong>${phase}</strong>${index === currentIndex ? ' <span class="map-note">• Active</span>' : ""}`;
+    card.setAttribute("role", "listitem");
+    card.innerHTML = `<strong>${phase}</strong>${
+      index === currentIndex ? ' <span class="map-note">— You are here 📍</span>' : ""
+    }`;
     timelineRoot.appendChild(card);
   });
 }
@@ -74,11 +77,28 @@ function renderGuidance(guidance) {
 
 function respondToChat(message) {
   const q = message.trim().toLowerCase();
-  if (q.includes("evm")) return "EVM is the Electronic Voting Machine used for casting votes, paired with VVPAT for paper audit trail.";
-  if (q.includes("nota")) return "NOTA means None of the Above. You can select it if no candidate matches your choice.";
-  if (q.includes("without voter id") || q.includes("without epic")) return "If your name is on the roll, other ECI-approved photo IDs may still allow voting.";
-  if (q.includes("polling") || q.includes("where do i vote")) return "Use the location tool above: city-first maps search + election office + polling station + ECI fallback links.";
-  return "I can help with eligibility, registration, booth finding, EVM/NOTA, and voting-day prep. Ask me a specific step.";
+
+  if (q.includes("evm")) {
+    return "EVM means Electronic Voting Machine. It lets voters cast ballots digitally at polling booths, and it is paired with VVPAT for paper audit verification.";
+  }
+
+  if (q.includes("nota")) {
+    return "NOTA means 'None of the Above'. You can use it when none of the listed candidates match your preference, while still participating in the election.";
+  }
+
+  if (q.includes("without voter id") || q.includes("without epic") || q.includes("without id")) {
+    return "If you do not have your voter ID (EPIC), you may still vote using other Election Commission-approved photo IDs if your name is on the voter list.";
+  }
+
+  if (q.includes("timeline") || q.includes("phases")) {
+    return "Election timeline usually moves as: registration → campaigning → voting day → counting → results. I can show where you are based on your profile.";
+  }
+
+  if (q.includes("where do i vote") || q.includes("polling")) {
+    return "Share your city/area in the location section above. I now provide multiple map links + an official ECI lookup fallback if Google Maps misses your query.";
+  }
+
+  return "Got it. I can explain voting terms, eligibility, registration, timeline, or polling booth guidance in simple steps. Try asking one of those!";
 }
 
 function pushBubble(role, text) {
@@ -113,14 +133,32 @@ locationForm.addEventListener("submit", (event) => {
     eci: "https://voters.eci.gov.in/",
   };
 
-  locationOutput.innerHTML = `<p><strong>Smart lookup for ${location}</strong></p>
-  <ul class="location-links">
-    <li><a target="_blank" rel="noopener noreferrer" href="${links.city}">Open city in Maps</a></li>
-    <li><a target="_blank" rel="noopener noreferrer" href="${links.election}">Find election offices nearby</a></li>
-    <li><a target="_blank" rel="noopener noreferrer" href="${links.polling}">Find polling stations nearby</a></li>
-    <li><a target="_blank" rel="noopener noreferrer" href="${links.web}">Use Google fallback search</a></li>
-    <li><a target="_blank" rel="noopener noreferrer" href="${links.eci}">Use official ECI Voter Portal</a></li>
-  </ul>`;
+  if (!location) {
+    locationOutput.innerHTML = "<p>Please enter your city or area first.</p>";
+    return;
+  }
+
+  const locationOnly = encodeURIComponent(`${location}, India`);
+  const electionContext = encodeURIComponent(`${location} election office India`);
+  const pollingContext = encodeURIComponent(`${location} polling station`);
+
+  const mapsLocationUrl = `https://www.google.com/maps/search/?api=1&query=${locationOnly}`;
+  const mapsElectionUrl = `https://www.google.com/maps/search/?api=1&query=${electionContext}`;
+  const mapsPollingUrl = `https://www.google.com/maps/search/?api=1&query=${pollingContext}`;
+  const googleWebSearch = `https://www.google.com/search?q=${encodeURIComponent(`${location} polling booth locator`)}`;
+  const eciVoterPortal = "https://voters.eci.gov.in/";
+
+  locationOutput.innerHTML = `
+    <p><strong>Better search strategy for ${location}:</strong></p>
+    <ul class="location-links">
+      <li><a href="${mapsLocationUrl}" target="_blank" rel="noopener noreferrer">1) Open ${location} on Maps first</a></li>
+      <li><a href="${mapsElectionUrl}" target="_blank" rel="noopener noreferrer">2) Then search “election office” nearby</a></li>
+      <li><a href="${mapsPollingUrl}" target="_blank" rel="noopener noreferrer">3) Try “polling station” nearby</a></li>
+      <li><a href="${googleWebSearch}" target="_blank" rel="noopener noreferrer">4) Fallback: Google web search for booth locator</a></li>
+      <li><a href="${eciVoterPortal}" target="_blank" rel="noopener noreferrer">5) Official fallback: ECI Voter Portal booth details</a></li>
+    </ul>
+    <p class="map-note">Tip: If Maps says “can't find”, keep only city name (e.g., “Kolkata”) and run step 2 or 3.</p>
+  `;
 });
 
 chatForm.addEventListener("submit", (event) => {
